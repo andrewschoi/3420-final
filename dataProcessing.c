@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <dataProcessing.h>
 
 #define PI 3.14159265
 #define SIGMA 1.0
