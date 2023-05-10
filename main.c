@@ -10,40 +10,8 @@
 #include <board.h>
 #include <fsl_debug_console.h>
 
-#define LIGHT_SENSOR_PIN (20)
+#define LIGHT_SENSOR_PIN (22)
 #define LIGHT_INTENSITY_THRESHOLD 127
-
-void init_uart(void)
-{
-	//Use UART port through debug interface
-	// Connect to UART with TX (115200, 8N1)
-
-	BOARD_InitBootPins();
-        BOARD_InitBootClocks();
- 	BOARD_InitDebugConsole();
-}
-
-void uart_putc (char ch)
-{
-	/* Wait until space is available in the FIFO */
-	while(!(UART0->S1 & UART_S1_TDRE_MASK));
-	/* Send the character */
-	UART0->D = (uint8_t)ch;
-}
-
-void uart_puts(char *ptr_str)
-{
-    while(*ptr_str){
-			/* Replace newlines with \r\n carriage return */
-			if(*ptr_str == '\n') { uart_putc('\r'); }
-      uart_putc(*ptr_str++);
-		}
-}
-
-void short_delay()
-{
-	for(int i=1000000; i>0; i--){}
-}
 
 int read_ADC(void)
 {
@@ -96,6 +64,30 @@ void ADC_Calibration()
     ADC0->MG = calib;
 }
 
+void short_delay()
+{
+for(int i=1000000; i>0; i--){}
+}
+
+
+int read_ADC_avg(void)
+{
+    int sum = 0;
+    for(int i=0; i<10; i++)
+    {
+        // Select ADC channel for the light sensor
+        ADC0->SC1[0] = ADC_SC1_ADCH(LIGHT_SENSOR_PIN);
+
+        // Wait for the conversion to complete
+        while (!(ADC0->SC1[0] & ADC_SC1_COCO_MASK));
+
+        // Read the ADC result
+        sum += ADC0->R[0];
+    }
+    return sum / 10;
+}
+
+
 void main(void)
 {
     init_ADC0();
@@ -104,16 +96,10 @@ void main(void)
 
     LED_Off();
 
-	init_uart();
-	uart_puts("Hello There Again!\n");
-
     while (1)
     {
-    	int light_reading = read_ADC();
-    	enqueue(light_reading);
-    	dequeue(light_reading);
-
-        if (light_reading > 80)
+    	int light_reading = read_ADC_avg();
+        if (light_reading > 20)
         {
 			LEDGreen_On();
 			delay();
@@ -127,6 +113,8 @@ void main(void)
 //			green_on = 0;
         	LED_Off();
         	delay();
+
         }
+
     }
 }
