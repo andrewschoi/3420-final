@@ -4,44 +4,45 @@
 #include <dataProcessing.h>
 #include <dataQueue.h>
 
+#include <stdio.h>
+#include <pin_mux.h>
+#include <clock_config.h>
+#include <board.h>
+#include <fsl_debug_console.h>
+
 #define LIGHT_SENSOR_PIN (20)
 #define LIGHT_INTENSITY_THRESHOLD 127
 
-int main(void)
+void init_uart(void)
 {
-    init_ADC0();
-    ADC_Calibration();
-    LED_Initialize();
+	//Use UART port through debug interface
+	// Connect to UART with TX (115200, 8N1)
 
-    int green_on = 0;
-    LEDRed_On();
+	BOARD_InitBootPins();
+        BOARD_InitBootClocks();
+ 	BOARD_InitDebugConsole();
+}
 
-    while (1)
-    {
-        if (read_ADC() > LIGHT_INTENSITY_THRESHOLD)
-        {
-            if (green_on == 0)
-            {
-                LEDRed_Toggle();
-                LEDGreen_Toggle();
-                delay();
-                delay();
-                delay();
-                green_on = 1;
-            }
-        }
-        else
-        {
-            if (green_on == 1)
-            {
-                LEDGreen_Toggle();
-                LEDRed_Toggle();
-                delay();
-                green_on = 0;
-            }
-        }
-        delay();
-    }
+void uart_putc (char ch)
+{
+	/* Wait until space is available in the FIFO */
+	while(!(UART0->S1 & UART_S1_TDRE_MASK));
+	/* Send the character */
+	UART0->D = (uint8_t)ch;
+}
+
+void uart_puts(char *ptr_str)
+{
+    while(*ptr_str){
+			/* Replace newlines with \r\n carriage return */
+			if(*ptr_str == '\n') { uart_putc('\r'); }
+      uart_putc(*ptr_str++);
+		}
+}
+
+void short_delay()
+{
+	for(int i=1000000; i>0; i--){}
 }
 
 int read_ADC(void)
@@ -50,8 +51,7 @@ int read_ADC(void)
     ADC0->SC1[0] = ADC_SC1_ADCH(LIGHT_SENSOR_PIN);
 
     // Wait for the conversion to complete
-    while (!(ADC0->SC1[0] & ADC_SC1_COCO_MASK))
-        ;
+    while (!(ADC0->SC1[0] & ADC_SC1_COCO_MASK));
 
     // Read the ADC result
     return ADC0->R[0];
@@ -94,4 +94,39 @@ void ADC_Calibration()
     calib = ADC0->CLM0 + ADC0->CLM1 + ADC0->CLM2 + ADC0->CLM3 + ADC0->CLM4 + ADC0->CLMS;
     calib = (calib >> 1) | 0x8000;
     ADC0->MG = calib;
+}
+
+void main(void)
+{
+    init_ADC0();
+    ADC_Calibration();
+    LED_Initialize();
+
+    LED_Off();
+
+	init_uart();
+	uart_puts("Hello There Again!\n");
+
+    while (1)
+    {
+    	int light_reading = read_ADC();
+    	enqueue(light_reading);
+    	dequeue(light_reading);
+
+        if (light_reading > 80)
+        {
+			LEDGreen_On();
+			delay();
+//			LEDRed_Toggle();
+        }
+        else
+        {
+//			LEDGreen_Toggle();
+//			LEDRed_On();
+//			LEDGreen_Toggle();
+//			green_on = 0;
+        	LED_Off();
+        	delay();
+        }
+    }
 }
