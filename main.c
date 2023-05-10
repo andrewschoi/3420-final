@@ -2,6 +2,7 @@
 #include <utils.h>
 #include <stdint.h>
 #include <dataProcessing.h>
+#include <dataQueue.h>
 
 #define LIGHT_SENSOR_PIN (20)
 #define LIGHT_INTENSITY_THRESHOLD 127
