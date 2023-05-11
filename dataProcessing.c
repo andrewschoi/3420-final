@@ -63,7 +63,7 @@ void calculateGaussianFilter(int filter[])
 }
 
 // Modifies input array [input] of size [size] by applying [filter] on [input]
-void applyGaussianFilter(int input[], int filter[], int size)
+void applyGaussianFilter(double input[], int filter[], int size)
 {
   double sum = 0.0;
 
@@ -91,15 +91,15 @@ void applyGaussianFilter(int input[], int filter[], int size)
 
 // Gives whether the maximum difference in [input] (after gaussian filtering)
 // exceeds the [INTENSITY_DIFFERENCE_THRESHOLD]
-int exceedDifferenceThreshold(int input[], int size)
+int exceedDifferenceThreshold(double input[], int size)
 {
-  int filter[FILTER_SIZE];
+  double filter[FILTER_SIZE];
   calculateGaussianFilter(filter);
 
   double inputCopy[size];
   for (int i = 0; i < size; i++)
   {
-    inputCopy[i] = (double)input[i];
+    inputCopy[i] = input[i];
   }
 
   applyGaussianFilter(inputCopy, filter, size);
