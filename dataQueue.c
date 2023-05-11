@@ -1,11 +1,11 @@
 #include <dataQueue.h>
 #include <dataProcessing.h>
 
-int queue[QUEUE_SIZE];
+double queue[QUEUE_SIZE];
 int front = 0;
 int rear = 0;
 
-void enqueue(int data)
+void enqueue(double data)
 {
   // Check if queue is full
   if ((rear + 1) % QUEUE_SIZE == front)
@@ -19,7 +19,7 @@ void enqueue(int data)
   rear = (rear + 1) % QUEUE_SIZE;
 }
 
-int dequeue(void)
+double dequeue(void)
 {
   // Check if queue is empty
   if (front == rear)
@@ -29,14 +29,14 @@ int dequeue(void)
   }
 
   // Remove oldest element
-  int data = queue[front];
+  double data = queue[front];
   front = (front + 1) % QUEUE_SIZE;
   return data;
 }
 
 int doesExceedThreshold(void)
 {
-  int queue_copy[QUEUE_SIZE];
+  double queue_copy[QUEUE_SIZE];
   for (int i = 0; i < QUEUE_SIZE; i++)
   {
     queue_copy[i] = queue[(front + i) % QUEUE_SIZE];

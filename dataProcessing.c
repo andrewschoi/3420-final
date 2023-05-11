@@ -2,10 +2,17 @@
 #include <math.h>
 #include <dataProcessing.h>
 
+#include <stdio.h>
+#include <pin_mux.h>
+#include <clock_config.h>
+#include <board.h>
+#include <fsl_debug_console.h>
+#include <MKL46Z4.h>
+
 #define PI 3.14159265
 #define SIGMA 1.0
-#define FILTER_SIZE 5
-#define INTENSITY_DIFFERENCE_THRESHOLD 0.1
+#define FILTER_SIZE 6
+#define INTENSITY_DIFFERENCE_THRESHOLD 0.5
 
 double max(double input[], int size)
 {
@@ -56,7 +63,7 @@ void applyGaussianFilter(double input[], double filter[], int size, double resul
     double sum = 0.0;
     for (int j = 0; j < FILTER_SIZE; j++)
     {
-      int index = (i + j - FILTER_SIZE / 2 + size) % size; // wrap around
+      int index = (int)(i + j - FILTER_SIZE / 2 + size) % size; // wrap around
       sum += input[index] * filter[j];
     }
     result[i] = sum;
@@ -79,8 +86,10 @@ int exceedDifferenceThreshold(double input[], int size)
   double result[size];
 
   applyGaussianFilter(input, filter, size, result);
+  double difference = max(result, size) - min(result, size);
+  PRINTF("difference %d ", difference);
 
-  if (max(result, size) - min(result, size) > INTENSITY_DIFFERENCE_THRESHOLD)
+  if (difference > INTENSITY_DIFFERENCE_THRESHOLD)
   {
     return 1;
   }
