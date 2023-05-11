@@ -163,7 +163,6 @@ int main(void) {
 		{
 			LED_Off();
 		}
-		short_delay();
     }
     return 0 ;
 }
