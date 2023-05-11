@@ -5,7 +5,7 @@
 #define PI 3.14159265
 #define SIGMA 1.0
 #define FILTER_SIZE 5
-#define INTENSITY_DIFFERENCE_THRESHOLD 1
+#define INTENSITY_DIFFERENCE_THRESHOLD 0.1
 
 // Gives maximum of an input array of size [size]
 double max(double input[], int size)
