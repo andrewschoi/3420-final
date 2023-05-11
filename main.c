@@ -66,7 +66,7 @@ void ADC_Calibration()
 
 void short_delay()
 {
-for(int i=1000000; i>0; i--){}
+	for(int i=1000000; i>0; i--){}
 }
 
 
@@ -131,8 +131,7 @@ void SetupADC(){
 
 int main(void) {
 
-	int light_val;
-
+	int light_reading;
 
     // printf initialization
     BOARD_InitBootPins();
@@ -143,20 +142,28 @@ int main(void) {
     LED_Initialize();
 
     SIM->SCGC5 |= (1<<13); // Enable Light Sensor I/O Port
-    					   // Pin defaults to ADC
 
     while(1) {
 
-    		ADC0->SC1[0] = ADC_SC1_ADCH(3); //Start conversion by writing the channel
-    										//to ADCH. The light sensor is on channel 3
+		ADC0->SC1[0] = ADC_SC1_ADCH(3); //Start conversion by writing the channel
+										//to ADCH. The light sensor is on channel 3
 
-			while(!(ADC0->SC1[0] & ADC_SC1_COCO_MASK)); //Block until conversion is complete
+		while(!(ADC0->SC1[0] & ADC_SC1_COCO_MASK)); //Block until conversion is complete
 
-    		light_reading = ADC0->R[0];
+		light_reading = ADC0->R[0];
 
-    		// display new reading
-    		PRINTF("New Reading: %d\n\r",light_reading);
+		// display new reading
+		PRINTF("New Reading: %d\n\r",light_reading);
 
+		if (light_reading < 1000)
+		{
+			LEDGreen_On();
+		}
+		else
+		{
+			LED_Off();
+		}
+		short_delay();
     }
     return 0 ;
 }
