@@ -1,4 +1,5 @@
 #include <dataQueue.h>
+#include <dataProcessing.h>
 
 int queue[QUEUE_SIZE];
 int front = 0;
@@ -18,7 +19,7 @@ void enqueue(int data)
   rear = (rear + 1) % QUEUE_SIZE;
 }
 
-int dequeue()
+int dequeue(void)
 {
   // Check if queue is empty
   if (front == rear)
@@ -31,4 +32,14 @@ int dequeue()
   int data = queue[front];
   front = (front + 1) % QUEUE_SIZE;
   return data;
+}
+
+int doesExceedThreshold(void)
+{
+  int queue_copy[QUEUE_SIZE];
+  for (int i = 0; i < QUEUE_SIZE; i++)
+  {
+    queue_copy[i] = queue[(front + i) % QUEUE_SIZE];
+  }
+  return exceedDifferenceThreshold(queue_copy, QUEUE_SIZE);
 }

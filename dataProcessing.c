@@ -8,7 +8,7 @@
 #define INTENSITY_DIFFERENCE_THRESHOLD 1
 
 // Modifies [filter] to be a 1D Gaussian Filter
-void calculateGaussianFilter(double filter[])
+void calculateGaussianFilter(int filter[])
 {
   double sum = 0.0;
   int start = -FILTER_SIZE / 2;
@@ -25,7 +25,7 @@ void calculateGaussianFilter(double filter[])
 }
 
 // Modifies input array [input] of size [size] by applying [filter] on [input]
-void applyGaussianFilter(double input[], double filter[], int size)
+void applyGaussianFilter(int input[], int filter[], int size)
 {
   double sum = 0.0;
 
@@ -51,12 +51,12 @@ void applyGaussianFilter(double input[], double filter[], int size)
 
 // Gives whether the maximum difference in [input] (after gaussian filtering)
 // exceeds the [INTENSITY_DIFFERENCE_THRESHOLD]
-int exceedDifferenceThreshold(double input[], int size)
+int exceedDifferenceThreshold(int input[], int size)
 {
-  double filter[FILTER_SIZE];
+  int filter[FILTER_SIZE];
   calculateGaussianFilter(filter);
 
-  double inputCopy[size];
+  int inputCopy[size];
   for (int i = 0; i < size; i++)
   {
     inputCopy[i] = input[i];
@@ -70,14 +70,14 @@ int exceedDifferenceThreshold(double input[], int size)
 }
 
 // Gives maximum of an input array of size [size]
-double max(double input[], int size)
+int max(int input[], int size)
 {
   if (size <= 0)
   {
     return 0;
   }
 
-  double maximum = input[0];
+  int maximum = input[0];
   for (int i = 1; i < size; i++)
   {
     if (input[i] > maximum)
@@ -89,14 +89,14 @@ double max(double input[], int size)
 }
 
 // Gives minimum of an input array of size [size]
-double min(double input[], int size)
+int min(int input[], int size)
 {
   if (size <= 0)
   {
     return 0;
   }
 
-  double minimum = input[0];
+  int minimum = input[0];
   for (int i = 1; i < size; i++)
   {
     if (input[i] < minimum)
