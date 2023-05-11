@@ -76,19 +76,13 @@ int exceedDifferenceThreshold(double input[], int size)
   double filter[FILTER_SIZE];
   calculateGaussianFilter(filter);
 
-  double *result = (double *)malloc(size * sizeof(double));
-  if (result == NULL)
-  {
-    // Handle error
-  }
+  double result[size];
 
   applyGaussianFilter(input, filter, size, result);
 
   if (max(result, size) - min(result, size) > INTENSITY_DIFFERENCE_THRESHOLD)
   {
-    free(result);
     return 1;
   }
-  free(result);
   return 0;
 }
