@@ -1,6 +1,13 @@
 #include <dataQueue.h>
 #include <dataProcessing.h>
 
+#include <stdio.h>
+#include <pin_mux.h>
+#include <clock_config.h>
+#include <board.h>
+#include <fsl_debug_console.h>
+#include <MKL46Z4.h>
+
 double queue[QUEUE_SIZE];
 int front = 0;
 int rear = 0;
@@ -41,5 +48,9 @@ int doesExceedThreshold(void)
   {
     queue_copy[i] = queue[(front + i) % QUEUE_SIZE];
   }
+
+  for (int i = 0; i < QUEUE_SIZE, i++)
+    PRINTF(queue_copy[i]);
+
   return exceedDifferenceThreshold(queue_copy, QUEUE_SIZE);
 }

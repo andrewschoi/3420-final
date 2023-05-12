@@ -87,7 +87,7 @@ int exceedDifferenceThreshold(double input[], int size)
 
   applyGaussianFilter(input, filter, size, result);
   double difference = max(result, size) - min(result, size);
-  PRINTF("difference %d ", difference);
+  // PRINTF("difference %d ", difference);
 
   if (difference > INTENSITY_DIFFERENCE_THRESHOLD)
   {
