@@ -74,17 +74,17 @@ int main(void)
     SIM->SCGC5 |= (1 << 13); // Enable Light Sensor I/O Port
 
     // Fill up the data queue
-//    for (int i = 0; i < DATA_INGESTION_PERIOD; i++)
-//    {
-//        ADC0->SC1[0] = ADC_SC1_ADCH(3); // Start conversion by writing the channel
-//                                        // to ADCH. The light sensor is on channel 3
-//
-//        while (!(ADC0->SC1[0] & ADC_SC1_COCO_MASK))
-//            ; // Block until conversion is complete
-//
-//        samplePoint = ADC0->R[0];
-//        enqueue(samplePoint);
-//    }
+    for (int i = 0; i < DATA_INGESTION_PERIOD; i++)
+    {
+        ADC0->SC1[0] = ADC_SC1_ADCH(3); // Start conversion by writing the channel
+                                        // to ADCH. The light sensor is on channel 3
+
+        while (!(ADC0->SC1[0] & ADC_SC1_COCO_MASK))
+            ; // Block until conversion is complete
+
+        samplePoint = ADC0->R[0];
+        enqueue(samplePoint);
+    }
 
     // Poll light sensor
     while (1)
@@ -101,7 +101,7 @@ int main(void)
         // display new reading
         PRINTF("New Reading: %d\n\r", samplePoint);
 
-        enqueue(samplePoint);                             // queues the sampled data
+        enqueue(samplePoint);                         // queues the sampled data
         isExceedingThreshold = doesExceedThreshold(); // gives whether we exceed the light intensity threshold
         PRINTF("threshold: %d\n", isExceedingThreshold);
 

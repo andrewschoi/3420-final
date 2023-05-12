@@ -43,14 +43,12 @@ double dequeue(void)
 
 int doesExceedThreshold(void)
 {
+
   double queue_copy[QUEUE_SIZE];
   for (int i = 0; i < QUEUE_SIZE; i++)
   {
     queue_copy[i] = queue[(front + i) % QUEUE_SIZE];
   }
-
-  for (int i = 0; i < QUEUE_SIZE, i++)
-    PRINTF("sampled point %d", queue_copy[i]);
 
   return exceedDifferenceThreshold(queue_copy, QUEUE_SIZE);
 }

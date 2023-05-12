@@ -12,7 +12,7 @@
 #define PI 3.14159265
 #define SIGMA 1.0
 #define FILTER_SIZE 6
-#define INTENSITY_DIFFERENCE_THRESHOLD 0.5
+#define INTENSITY_DIFFERENCE_THRESHOLD 1000
 
 double max(double input[], int size)
 {
@@ -78,7 +78,7 @@ void applyGaussianFilter(double input[], double filter[], int size, double resul
     result[i] = (result[i] - min_val) / (max_val - min_val);
 }
 
-int exceedDifferenceThreshold(double input[], int size)
+int exceedDifferenceThreshold(int input[], int size)
 {
   double filter[FILTER_SIZE];
   calculateGaussianFilter(filter);
@@ -88,8 +88,9 @@ int exceedDifferenceThreshold(double input[], int size)
   applyGaussianFilter(input, filter, size, result);
   double difference = max(result, size) - min(result, size);
   // PRINTF("difference %d ", difference);
+  int last = input[size - 1];
 
-  if (difference > INTENSITY_DIFFERENCE_THRESHOLD)
+  if (last > INTENSITY_DIFFERENCE_THRESHOLD)
   {
     return 1;
   }
