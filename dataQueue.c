@@ -50,7 +50,7 @@ int doesExceedThreshold(void)
   }
 
   for (int i = 0; i < QUEUE_SIZE, i++)
-    PRINTF(queue_copy[i]);
+    PRINTF("sampled point %d", queue_copy[i]);
 
   return exceedDifferenceThreshold(queue_copy, QUEUE_SIZE);
 }
